@@ -2,14 +2,13 @@ pyqt_ClSrTest
 
 Language: Python 3.7
 
-
-Project Description:
+PROJECT DESCRIPTION:
 This is a learning project to develop a server that can talk to multiple
 clients using PyQt5 QTcpSockets and QServer modules. For the project,
 clients and the server will use PyQt5 QDialog boxes configured as
 non-modal dialogs.
 
-Hardware Target:
+HARDWARE TARGET:
 the code will run on a Raspberry pi 4. 
 
 ===== VERSION INFORMATION ==========================================
