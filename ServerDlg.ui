@@ -210,7 +210,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pBtn_send_mesg">
+   <widget class="QPushButton" name="pBtn_send_msg">
     <property name="enabled">
      <bool>false</bool>
     </property>
