@@ -1,4 +1,5 @@
-"""Responsible managing client side of client/server socket communication.
+"""
+Manages client side of client/server socket communication.
 
 
 """
@@ -6,7 +7,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtNetwork import QTcpSocket, QAbstractSocket
-
 
 
 class ClientSocketManager(QtCore.QObject):
@@ -34,7 +34,7 @@ class ClientSocketManager(QtCore.QObject):
         
         if self._socket == None:
             self._socket = QTcpSocket()
-            self._socket.error.connect(self.on_errer)
+            self._socket.error.connect(self.on_error)
             self._socket.connected.connect(self.on_connected)
             self._socket.readyRead.connect(self.on_got_data)
             return True
@@ -57,7 +57,7 @@ class ClientSocketManager(QtCore.QObject):
 
     @pyqtSlot()
     def on_connected(self):
-        "We have a connection with the server!"
+        print("We have a connection with the server!")
         self._server_connect_handler(True)
         
     @pyqtSlot()
@@ -65,17 +65,18 @@ class ClientSocketManager(QtCore.QObject):
         pass
         
        
-    def try_server_connnection(self, ip, port):
+    def try_server_connection(self, ip, s_port):
         """Attempts to connect to server. If this much of the attempt works,
         True is returned. If socket config fails, False is returned. Both of
         these returns have a message with them in this order: TorF, msg. The
         caller SHOULD NOT ASSUME CONNECTION IS COMPLETE - wait for call to their
         connection notification handler."""
         self.SERVER_IP = ip
-        self.SERVER_LISTEN_PORT = port
+        self.SERVER_LISTEN_PORT = s_port
         #create our socket and attempt connection
+        
         if self.configure_socket():
-            self._socket.connectToHost(self.SERVER_IP, self.port)
+            self._socket.connectToHost(ip, s_port)
             return True, "Attempting connection..."
         else:
             return False, "Socket config failed, aborting connection attempt"

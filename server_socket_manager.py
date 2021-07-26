@@ -50,10 +50,10 @@ messages to, and acting on their messages if needed."""
     @pyqtSlot()    
     def on_new_connection(self):
         print('got new connection')
-        if len(self._active_server_list) >= self.SERVER_MAX_CONNECTIONS:
+        if len(self._active_client_list) >= self.SERVER_MAX_CONNECTIONS:
             print("TOO MANY CONNECTIONS - need to raise an exception")
         else:
-            client_socket = self._listen_server.nextPendingConnection()
+            client_socket = self._server.nextPendingConnection()
             new_client = ClientConnection(client_socket)
             self._active_client_list.append(new_client)
     
