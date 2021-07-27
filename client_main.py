@@ -7,7 +7,7 @@ manage the client side for one client of a multi-client/single-server
 asynchronous communication system.
 """
 import sys
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QByteArray
 from PyQt5.QtWidgets import QApplication, QDialog
 from PyQt5.uic import loadUi
 import client_socket_manager
@@ -42,6 +42,9 @@ class ClientSocketChat(QDialog):
         self.pBtn_connect_to_server.setEnabled(True) #should be checking ip,
         self.pBtn_disconnect_from_server.setEnabled(False)
         self.gBx_chat.setEnabled(False)
+        self.le_server_ip.setText('127.0.0.1')
+        self.le_server_port.setText('7011')
+        
         #signal/slot hookup
         self.pBtn_connect_to_server.clicked.connect(self.connect_server)
         self.pBtn_disconnect_from_server.clicked.connect(self.disconnect_server)
@@ -67,7 +70,9 @@ class ClientSocketChat(QDialog):
     
     @pyqtSlot()
     def send_msg(self):
-        pass
+        msg = self.le_msg_to_server.text()
+        self._socket_mgr.send_msg(msg)
+        
                         
     @pyqtSlot()
     def close_dlg(self):
@@ -77,6 +82,7 @@ class ClientSocketChat(QDialog):
         if result:
             print('got connection')
             self.gBx_chat.setEnabled(True)
+            self.pBtn_send_msg.setEnabled(True)
         else:
             print('oh well, connection failed')
             

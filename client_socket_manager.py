@@ -36,7 +36,7 @@ class ClientSocketManager(QtCore.QObject):
             self._socket = QTcpSocket()
             self._socket.error.connect(self.on_error)
             self._socket.connected.connect(self.on_connected)
-            self._socket.readyRead.connect(self.on_got_data)
+            self._socket.readyRead.connect(self.on_got_msg)
             return True
         else:
             #need custom exception and try except
@@ -45,15 +45,20 @@ class ClientSocketManager(QtCore.QObject):
         
         
     @pyqtSlot()    
-    def on_error(self, error):
+    def on_error(self):
         """ captures any errors that occur to the socket"""
+        print('In on_error')
         s = self._socket
+        myerror = 0
         
-        if error == QAbstractSocket.ConnectionRefusedError:
-            print(f'Connection refused -- ip:port {s.peerAddress()}:{s.peerPort()}')
+        if myerror == QAbstractSocket.ConnectionRefusedError:
+            print(f'Connection refused -- ip:port: <{s.peerAddress().toString()[7:]}>:<{s.peerPort()}>')
             self._server_connect_handler(False)
         else:
             print(s.errorString())
+        del(s)
+        self._socket=None
+        print('leaving on_error')
 
     @pyqtSlot()
     def on_connected(self):
@@ -61,10 +66,24 @@ class ClientSocketManager(QtCore.QObject):
         self._server_connect_handler(True)
         
     @pyqtSlot()
-    def on_got_data(self):
-        pass
+    def on_got_msg(self):
+        qba_msg = self._socket.readAll()
+        str_msg = str(qba_msg.data(), encoding='utf-8')
+        print(f'Message: <{str_msg}>')
+    
+    
+    def send_msg(self, msg):
+        """sends a message to the server"""
+        b = bytearray(msg, encoding='utf-8')
+        self._socket.write(b)
+        self._socket.flush()
         
-       
+        
+    def get_client_ip_and_port(self):
+        print("NEED TO IMPLEMENT get_client_ip_and_port")
+        return "127.0.0.1", "unknown"
+    
+    
     def try_server_connection(self, ip, s_port):
         """Attempts to connect to server. If this much of the attempt works,
         True is returned. If socket config fails, False is returned. Both of
@@ -90,13 +109,14 @@ class ClientSocketManager(QtCore.QObject):
         self._server_connect_handler = handler
             
             
+
+    
+    
     def disconnect_from_server(self):
         print("NEED TO IMPLEMENT disconnect_from_server")
     
          
-    def get_client_ip_and_port(self):
-        print("NEED TO IMPLEMENT get_client_ip_and_port")
-        return "127.0.0.1", "unknown"
+
         
 
 

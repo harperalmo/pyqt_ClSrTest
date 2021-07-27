@@ -87,15 +87,16 @@ class ServerSocketChat(QDialog):
     def begin_listening(self):
         self._status="Listening..."
         self.lbl_status.setText(self._status)
+        self.gBx_chat.setEnabled(True)
+        self.pBtn_send_msg.setEnabled(True)
         
     
     
     @pyqtSlot()
     def send_msg_to_client(self):
         msg = self.le_msg_to_client.text()
-        print(f'Msg: <{msg}>')
-        self.client_msg_count += 1
-        self.le_msg_from_client.setText(f"pseudo message {self.client_msg_count}")
+        self._server.send_msg(msg)
+        
     
     @pyqtSlot()
     def close_dlg(self):
